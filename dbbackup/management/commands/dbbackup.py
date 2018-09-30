@@ -11,6 +11,7 @@ from ...db.base import get_connector
 from ...storage import get_storage, StorageError
 from ... import utils, settings
 
+from datetime import datetime
 
 class Command(BaseDbBackupCommand):
     help = "Backup a database, encrypt and/or compress and write to " \
@@ -32,7 +33,9 @@ class Command(BaseDbBackupCommand):
         make_option("-o", "--output-filename", default=None,
                     help="Specify filename on storage"),
         make_option("-O", "--output-path", default=None,
-                    help="Specify where to store on local filesystem")
+                    help="Specify where to store on local filesystem"),
+        make_option("-t", "--time", default=None,
+                    help="Specify the time")
     )
 
     @utils.email_uncaught_exception
@@ -50,6 +53,7 @@ class Command(BaseDbBackupCommand):
         self.filename = options.get('output_filename')
         self.path = options.get('output_path')
         self.storage = get_storage()
+        self.time = options.get('time') or datetime.now()
 
         self.database = options.get('database') or ''
         database_keys = self.database.split(',') or settings.DATABASES
@@ -70,7 +74,7 @@ class Command(BaseDbBackupCommand):
         """
         self.logger.info("Backing Up Database: %s", database['NAME'])
         # Get backup and name
-        filename = self.connector.generate_filename(self.servername)
+        filename = self.connector.generate_filename(self.servername, time=self.time)
         outputfile = self.connector.create_dump()
         # Apply trans
         if self.compress:

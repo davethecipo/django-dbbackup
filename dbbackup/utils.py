@@ -375,7 +375,7 @@ def filename_to_date(filename, datefmt=None):
         return datetime.strptime(datestring, datefmt)
 
 
-def filename_generate(extension, database_name='', servername=None, content_type='db', wildcard=None):
+def filename_generate(extension, database_name='', servername=None, content_type='db', wildcard=None, time=None):
     """
     Create a new backup filename.
 
@@ -394,6 +394,11 @@ def filename_generate(extension, database_name='', servername=None, content_type
     :param wildcard: Replace datetime with this wilecard regex
     :type content_type: ``str``
 
+    :param time: The time replacing the wildcard defined in settings.DATE_FORMAT.
+    The parameter ``wildcard`` has precedence over this. If None, it defaults to datetime.now().
+
+    :type content_type: ``datetime.datetime``
+
     :returns: Computed file name
     :rtype: ``str`
     """
@@ -408,9 +413,11 @@ def filename_generate(extension, database_name='', servername=None, content_type
     else:
         template = settings.FILENAME_TEMPLATE
 
+    if time is None:
+        time = time.strftime(settings.DATE_FORMAT)
     params = {
         'servername': servername or settings.HOSTNAME,
-        'datetime': wildcard or datetime.now().strftime(settings.DATE_FORMAT),
+        'datetime': wildcard or time,
         'databasename': database_name,
         'extension': extension,
         'content_type': content_type

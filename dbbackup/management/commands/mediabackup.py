@@ -13,6 +13,7 @@ from ._base import BaseDbBackupCommand, make_option
 from ... import utils
 from ...storage import get_storage, StorageError
 
+from datetime import datetime
 
 class Command(BaseDbBackupCommand):
     help = """Backup media files, gather all in a tarball and encrypt or
@@ -31,7 +32,9 @@ class Command(BaseDbBackupCommand):
         make_option("-o", "--output-filename", default=None,
                     help="Specify filename on storage"),
         make_option("-O", "--output-path", default=None,
-                    help="Specify where to store on local filesystem",)
+                    help="Specify where to store on local filesystem",),
+        make_option("-t", "--time", default=None,
+                    help="Specify the time")
     )
 
     @utils.email_uncaught_exception
@@ -46,6 +49,9 @@ class Command(BaseDbBackupCommand):
 
         self.filename = options.get('output_filename')
         self.path = options.get('output_path')
+
+        self.time = options.get('time') or datetime.now()
+
         try:
             self.media_storage = get_storage_class()()
             self.storage = get_storage()
@@ -89,7 +95,8 @@ class Command(BaseDbBackupCommand):
         extension = "tar%s" % ('.gz' if self.compress else '')
         filename = utils.filename_generate(extension,
                                            servername=self.servername,
-                                           content_type=self.content_type)
+                                           content_type=self.content_type,
+                                           time=self.time)
         tarball = self._create_tar(filename)
         # Apply trans
         if self.encrypt:
