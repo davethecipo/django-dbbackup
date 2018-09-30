@@ -414,7 +414,7 @@ def filename_generate(extension, database_name='', servername=None, content_type
         template = settings.FILENAME_TEMPLATE
 
     if time is None:
-        time = time.strftime(settings.DATE_FORMAT)
+        time = datetime.now().strftime(settings.DATE_FORMAT)
     params = {
         'servername': servername or settings.HOSTNAME,
         'datetime': wildcard or time,

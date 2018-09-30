@@ -27,6 +27,7 @@ class DbbackupCommandSaveNewBackupTest(TestCase):
         self.command.stdout = DEV_NULL
         self.command.filename = None
         self.command.path = None
+        self.command.time = None
 
     def tearDown(self):
         clean_gpg_keys()
@@ -49,6 +50,10 @@ class DbbackupCommandSaveNewBackupTest(TestCase):
         self.assertTrue(os.path.exists(self.command.path))
         # tearDown
         os.remove(self.command.path)
+
+    def test_time(self):
+        self.command.time = "2000-01-01 000000"
+        self.command._save_new_backup(TEST_DATABASE)
 
 
 @patch('dbbackup.settings.GPG_RECIPIENT', 'test@test')

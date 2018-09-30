@@ -21,6 +21,7 @@ class MediabackupBackupMediafilesTest(TestCase):
         self.command.encrypt = False
         self.command.path = None
         self.command.media_storage = get_storage_class()()
+        self.command.time = None
 
     def tearDown(self):
         if self.command.path is not None:
@@ -63,3 +64,9 @@ class MediabackupBackupMediafilesTest(TestCase):
         self.command.backup_mediafiles()
         self.assertTrue(os.path.exists(self.command.path))
         self.assertEqual(0, len(HANDLED_FILES['written_files']))
+
+    def test_time(self):
+        self.command.time = "2000-01-01 000000"
+        self.command.backup_media_files()
+        self.assertEqual(1, len(HANDLED_FILES['written_files']))
+        self.assertTrue(self.command.time in HANDLED_FILES['written_files'][0][0])
