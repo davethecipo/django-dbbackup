@@ -67,6 +67,6 @@ class MediabackupBackupMediafilesTest(TestCase):
 
     def test_time(self):
         self.command.time = "2000-01-01 000000"
-        self.command.backup_media_files()
+        self.command.backup_mediafiles()
         self.assertEqual(1, len(HANDLED_FILES['written_files']))
         self.assertTrue(self.command.time in HANDLED_FILES['written_files'][0][0])

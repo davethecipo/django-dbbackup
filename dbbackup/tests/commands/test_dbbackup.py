@@ -71,6 +71,7 @@ class DbbackupCommandSaveNewMongoBackupTest(TestCase):
         self.command.filename = None
         self.command.path = None
         self.command.connector = get_connector('default')
+        self.command.time = None
 
     def tearDown(self):
         clean_gpg_keys()

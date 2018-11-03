@@ -70,9 +70,9 @@ class BaseDBConnector(object):
             self._settings = sett
         return self._settings
 
-    def generate_filename(self, server_name=None):
+    def generate_filename(self, server_name=None, time=None):
         return utils.filename_generate(self.extension, self.database_name,
-                                       server_name)
+                                       server_name, time=time)
 
     def create_dump(self):
         dump = self._create_dump()
