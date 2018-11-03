@@ -38,6 +38,7 @@ class Command(BaseDbBackupCommand):
         self.verbosity = int(options.get('verbosity'))
         self.quiet = options.get('quiet')
         self._set_logger_level()
+        self.connector = get_connector('default')
 
         try:
             connection.close()
@@ -90,5 +91,4 @@ class Command(BaseDbBackupCommand):
             self._ask_confirmation()
 
         input_file.seek(0)
-        self.connector = get_connector(self.database_name)
         self.connector.restore_dump(input_file)
